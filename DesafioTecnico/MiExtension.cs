@@ -9,6 +9,11 @@ namespace MetodosDeExtension
 {
     public static class MiExtension
     {
+        /// <summary>
+        /// Metodo de extension que se utiliza para reducir una fraccion.
+        /// </summary>
+        /// <param name="Fraccion"></param>
+        /// <returns></returns>
         public static string Simplificar(this string Fraccion)
         {
             int[] NumerosSimplificar = ObtenerValores(Fraccion);
@@ -21,23 +26,21 @@ namespace MetodosDeExtension
                 Num1 = NumerosSimplificar[0];
                 Num2 = NumerosSimplificar[1];
                 int Denominador = MinimoComunDenominador(Num1, Num2);
-                if(Denominador != 0)
+                if (Denominador != 0)
                 {
-                    Resultado = $"{Num1 / Denominador}/{Num2 / Denominador}";
-
-                    if (Num1 == (Num1 / Denominador) && Num2 == (Num2 / Denominador))
-                    {
-                        return Resultado = $"\n La fraccion ya esta simplificada => {Num1}/{Num2}";
-                    }
+                    if (!(Num1 == (Num1 / Denominador) && Num2 == (Num2 / Denominador)))
+                        return Resultado = $"{Num1 / Denominador}/{Num2 / Denominador}";
+                    else
+                        return Resultado = $"La fraccion ya esta simplificada => {Num1}/{Num2}";
                 }
                 else
-                    return Resultado = $"\n No se puede reducir un fraccion con 0";
-               
+                    AlertarError(0, "No se puede reducir un fraccion con 0");
 
+                Resultado = "Error";
             }
             else
             {
-                Console.WriteLine("\n Error al obtener los valores de la fraccion seleccionada");
+                AlertarError(0, "Error al obtener los valores de la fraccion seleccionada");
                 Console.ReadKey();
                 Environment.Exit(0);
             }
@@ -45,6 +48,11 @@ namespace MetodosDeExtension
             return Resultado;
         }
 
+        /// <summary>
+        /// Metodo que obtiene la informacion de la fraccion cargada de un string.
+        /// </summary>
+        /// <param name="Fraccion"></param>
+        /// <returns></returns>
         public static int[] ObtenerValores(string Fraccion)
         {
             string Separador = "/";
@@ -59,14 +67,20 @@ namespace MetodosDeExtension
             }
             else
             {
-                Console.WriteLine("Error al ingresar la fraccion");
-                Console.WriteLine("RECUERDE la estructura de la fraccion a cargar tiene que tener la siguiente: <Numero>/<Numero>");
+                AlertarError(0, "Error al ingresar la fraccion");
+                AlertarError(0, "RECUERDE la estructura de la fraccion a cargar tiene que tener la siguiente: <Numero>/<Numero>");
                 Console.ReadKey();
                 Environment.Exit(0);
                 return null;
             }
         }
 
+        /// <summary>
+        /// Metodo que recibe dos numeros y devuelve el minimo comun denominador que tienen en comun.
+        /// </summary>
+        /// <param name="N1"></param>
+        /// <param name="N2"></param>
+        /// <returns></returns>
         public static int MinimoComunDenominador(int N1, int N2)
         {
             if ( N2 != 0)
@@ -87,6 +101,12 @@ namespace MetodosDeExtension
 
         }
 
+
+        /// <summary>
+        /// Metodo de Extension que se utiliza para consultar si un nombre es valido o no.
+        /// </summary>
+        /// <param name="NombreCompleto"></param>
+        /// <returns></returns>
         public static bool ValidarNombre(this string NombreCompleto)
         {
             NombreUsuario NombreValidar = new NombreUsuario()
@@ -136,7 +156,7 @@ namespace MetodosDeExtension
                         {
                             string RestoNombre = NombreCompleto.Substring(IndiceNombre);
                             int IndiceSiguienteMayuscula = NombreCompleto.IndexOf(RestoNombre.Where(c => char.IsUpper(c)).First());
-                            char SiguienteCaracter = NombreCompleto[IndiceSiguienteMayuscula + 1];.
+                            char SiguienteCaracter = NombreCompleto[IndiceSiguienteMayuscula + 1];
 
                             if (Char.IsLower(SiguienteCaracter))
                                 NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Todos los nombres tienen que ser iniciales y el apellido como palabra");
@@ -166,12 +186,22 @@ namespace MetodosDeExtension
             return NombreValidar.EsNombreValido;
         }
 
+        /// <summary>
+        /// Metodo que se utiliza para loguear Errores por pantalla y aumentar la cantidad de errrores en el caso del metodo ValidarNombre.
+        /// </summary>
+        /// <param name="CantidadErrores"></param>
+        /// <param name="MensajeSaliente"></param>
+        /// <returns></returns>
         public static int AlertarError(int CantidadErrores, string MensajeSaliente)
         {
             Console.WriteLine($" \nError: {MensajeSaliente}. \n");
             return CantidadErrores = CantidadErrores + 1;
         }
 
+        /// <summary>
+        /// Metodo que Muestra por consola toda la informacion que tiene el modelo NombreUsuario cargado en el metodo ValidarNombre.
+        /// </summary>
+        /// <param name="NombreAMostrar"></param>
         public static void MostarContenido(NombreUsuario NombreAMostrar)
         {
             foreach (var Inicial in NombreAMostrar.Iniciales)
