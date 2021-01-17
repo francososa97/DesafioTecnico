@@ -116,6 +116,13 @@ namespace MetodosDeExtension
                 CantidadDeEspacios = NombreCompleto.Count(Char.IsWhiteSpace)
             };
             NombreCompleto = NombreCompleto.Trim();
+            char ValorApellido = NombreCompleto.Where(c => char.IsUpper(c)).Last();
+            int InicioApellido = NombreCompleto.IndexOf(ValorApellido);
+            NombreValidar.Apellido = NombreCompleto.Substring(InicioApellido);
+            NombreValidar.NombreSimple = NombreCompleto.Substring(0, InicioApellido);
+            string NombrePalabra = EsNombrePalabra(NombreValidar.NombreSimple);
+            bool NombreInicialPalabra = NombrePalabra.Length > 1 ? true : false;
+
             if (char.IsUpper(NombreCompleto[0]))
             {
                 int i = 0;
@@ -125,8 +132,19 @@ namespace MetodosDeExtension
                 {
                     int CantidadPuntos = NombreCompleto.Count(c => c == NombreCompleto[IndiceCaracter]);
                     int CantidadPalabras = NombreValidar.CantidadDeEspacios + 1;
-                    bool ErrrorEnPuntos = CantidadPuntos == CantidadPalabras - 1 ? false : true;
+                    bool ErrrorEnPuntos = CantidadPuntos == CantidadPalabras - 1 || NombreInicialPalabra ? false : true;
 
+                    if (CantidadPalabras >2)
+                    {
+
+                        char CaraterSegundoNombre = NombreValidar.NombreSimple.Where(c => char.IsUpper(c)).Last();
+                        int InicioSegundoNombre = NombreValidar.NombreSimple.IndexOf(CaraterSegundoNombre);
+                        char FinSegundoNombre = NombreValidar.NombreSimple.Where(c => c == ' ').Last();
+                        int IndiceFinSegundoNombre = NombreValidar.NombreSimple.IndexOf(CaraterSegundoNombre);
+                        string SegundoNombre = NombreValidar.NombreSimple.Substring(InicioSegundoNombre, IndiceFinSegundoNombre);
+                        if (SegundoNombre.Length > 1)
+                            NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El segundo nombre tiene que ser inicial y terminar en punto");
+                    }
                     if (CantidadPuntos > 2)
                         NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Solo puede haber de 2 a 3 terminos");
 
@@ -139,38 +157,44 @@ namespace MetodosDeExtension
                 else
                     NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "No se encontro el caracter =>. , luego de una inicial se debe incluir un punto");
 
-                char ValorApellido = NombreCompleto.Where(c => char.IsUpper(c)).Last();
-                int InicioApellido = NombreCompleto.IndexOf(ValorApellido);
-                int FinApellido = NombreCompleto.IndexOf(NombreCompleto.Last());
-                NombreValidar.Apellido = NombreCompleto.Substring(InicioApellido, FinApellido);
-                NombreValidar.NombreSimple = NombreCompleto.Substring(0, InicioApellido);
 
-                foreach (var Caracter in NombreCompleto)
+                if(!NombreInicialPalabra)
                 {
-                    if (CaracterSolicitado == Caracter)
+                    foreach (var Caracter in NombreCompleto)
                     {
-                        int IndiceNombre = NombreCompleto.IndexOf(NombreCompleto[i]);
-                        var InicialNombre = NombreCompleto.Substring(0, IndiceNombre);
-                        bool NombreInicial = InicialNombre.Length == 1 ? true : false;
-                        if (NombreInicial)
+                        if (CaracterSolicitado == Caracter)
                         {
-                            string RestoNombre = NombreCompleto.Substring(IndiceNombre);
-                            int IndiceSiguienteMayuscula = NombreCompleto.IndexOf(RestoNombre.Where(c => char.IsUpper(c)).First());
-                            char SiguienteCaracter = NombreCompleto[IndiceSiguienteMayuscula + 1];
+                            int IndiceNombre = NombreCompleto.IndexOf(NombreCompleto[i]);
+                            var InicialNombre = NombreCompleto.Substring(0, IndiceNombre);
+                            bool NombreInicial = InicialNombre.Length == 1 ? true : false;
+                            if (NombreInicial)
+                            {
+                                string RestoNombre = NombreCompleto.Substring(IndiceNombre);
+                                int IndiceSiguienteMayuscula = NombreCompleto.IndexOf(RestoNombre.Where(c => char.IsUpper(c)).First());
+                                char ApellidoInicio = NombreCompleto[IndiceSiguienteMayuscula];
 
-                            if (Char.IsLower(SiguienteCaracter))
-                                NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Todos los nombres tienen que ser iniciales y el apellido como palabra");
+                                if (IndiceSiguienteMayuscula == -1)
+                                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El apellido tiene que ser capitalizado");
 
-                            if (!char.IsUpper(NombreCompleto[i - 1]))
-                                NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Todas Las iniciales de los nombres tienen que ser capitalizadas");
+                                if (Char.IsLower(ApellidoInicio))
+                                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Todos los nombres tienen que ser iniciales y el apellido como palabra");
 
-                            NombreValidar.Iniciales.Add(NombreCompleto[i - 1]);
+                                if (!char.IsUpper(NombreCompleto[i - 1]))
+                                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Todas Las iniciales de los nombres tienen que ser capitalizadas");
+
+                                NombreValidar.Iniciales.Add(NombreCompleto[i - 1]);
+                            }
+                            else
+                                NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El nombre tiene que ser una inicial y no un nombre");
                         }
-                        else
-                            NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El nombre tiene que ser una inicial y no un nombre");
+                        i++;
                     }
-                    i++;
                 }
+                else
+                {
+                    NombreValidar.NombreSimple = NombrePalabra;
+                }
+               
                 NombreValidar.CantidadIniciales = NombreValidar.Iniciales.Count();
 
                 if (NombreValidar.Apellido.Length == 1)
@@ -214,6 +238,41 @@ namespace MetodosDeExtension
             Console.WriteLine($"\n El nombre ingresado tiene una cantidad de {NombreAMostrar.CantidadMayusculas} mayusculas");
             Console.WriteLine($"\n El nombre ingresado tiene una cantidad de {NombreAMostrar.CantidadDeEspacios} espacios");
             Console.WriteLine($"\n El nombre ingresado tiene una cantidad de {NombreAMostrar.CantidadErrores} errores");
+        }
+
+        /// <summary>
+        /// Metodo que recibe el nombre ingresado y valida si es una palabra o una inicial
+        /// </summary>
+        /// <param name="Nombre"></param>
+        /// <returns></returns>
+        public static string EsNombrePalabra(string Nombre)
+        {
+
+            string NombreInicial = "";
+            if(Nombre.Length <=1)
+            {
+                Console.WriteLine("El nombre inicial esta vacio");
+            }
+            else
+            {
+                bool EsInicialMayusucla = char.IsUpper(Nombre.First());
+                int FinNombre = Nombre.IndexOf(' ');
+                int InicioNombre = Nombre.IndexOf(Nombre[0]);
+
+                if (!EsInicialMayusucla)
+                {
+                    Console.WriteLine("El nombre debe estar capitalizado");
+                }
+                else
+                {
+                    if (FinNombre == -1)
+                        Console.WriteLine("El nombre debe contener un espacio al final");
+                    else
+                        NombreInicial = Nombre.Substring(InicioNombre, FinNombre);
+                }
+            }
+
+            return NombreInicial;
         }
     }
 }

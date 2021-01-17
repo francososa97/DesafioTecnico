@@ -63,9 +63,14 @@ namespace DesafioTecnico
 
         public static void ObtenerValidacionNombre()
         {
+            var NPrueba8 = "E. Allan P.";
+            bool NombreValido8 = NPrueba8.ValidarNombre();
+            string Resultado8= NombreValido8 ? " valido" : " invalido";
+            Console.WriteLine($"El nombre {NPrueba8} es {Resultado8} y tenia que ser invalido");
+
             Console.WriteLine("\nSeleccione el nombre a validar: ");
-            string FraccionSeleccionada = Console.ReadLine();
-            bool NombreValido = FraccionSeleccionada.ValidarNombre();
+            string NomnreSeleccionado = Console.ReadLine();
+            bool NombreValido = NomnreSeleccionado.ValidarNombre();
             string Resultado = NombreValido ? "El nombre ingresado es valido" : "El nombre ingresado es invalido";
             Console.WriteLine(Resultado);
         }
