@@ -9,6 +9,7 @@ namespace MetodosDeExtension
 {
     public static class MiExtension
     {
+        #region Primer Parte
         /// <summary>
         /// Metodo de extension que se utiliza para reducir una fraccion.
         /// </summary>
@@ -100,8 +101,9 @@ namespace MetodosDeExtension
             }
 
         }
+        #endregion
 
-
+        #region Segunda Parte
         /// <summary>
         /// Metodo de Extension que se utiliza para consultar si un nombre es valido o no.
         /// </summary>
@@ -120,7 +122,25 @@ namespace MetodosDeExtension
             int InicioApellido = NombreCompleto.IndexOf(ValorApellido);
             NombreValidar.Apellido = NombreCompleto.Substring(InicioApellido);
             NombreValidar.NombreSimple = NombreCompleto.Substring(0, InicioApellido);
-            string NombrePalabra = EsNombrePalabra(NombreValidar.NombreSimple);
+            string NombrePalabra = "";
+            if (NombreValidar.NombreSimple.Length <= 1)
+                NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El nombre inicial esta vacio");
+            else
+            {
+                bool EsInicialMayusucla = char.IsUpper(NombreValidar.NombreSimple.First());
+                int FinNombre = NombreValidar.NombreSimple.IndexOf(' ');
+                int InicioNombre = NombreValidar.NombreSimple.IndexOf(NombreValidar.NombreSimple[0]);
+
+                if (!EsInicialMayusucla)
+                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El nombre debe estar capitalizado");
+                else
+                {
+                    if (FinNombre == -1)
+                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El nombre debe contener un espacio al final");
+                    else
+                        NombrePalabra = NombreValidar.NombreSimple.Substring(InicioNombre, FinNombre);
+                }
+            }
             bool NombreInicialPalabra = NombrePalabra.Length > 1 ? true : false;
 
             if (char.IsUpper(NombreCompleto[0]))
@@ -240,39 +260,6 @@ namespace MetodosDeExtension
             Console.WriteLine($"\n El nombre ingresado tiene una cantidad de {NombreAMostrar.CantidadErrores} errores");
         }
 
-        /// <summary>
-        /// Metodo que recibe el nombre ingresado y valida si es una palabra o una inicial
-        /// </summary>
-        /// <param name="Nombre"></param>
-        /// <returns></returns>
-        public static string EsNombrePalabra(string Nombre)
-        {
-
-            string NombreInicial = "";
-            if(Nombre.Length <=1)
-            {
-                Console.WriteLine("El nombre inicial esta vacio");
-            }
-            else
-            {
-                bool EsInicialMayusucla = char.IsUpper(Nombre.First());
-                int FinNombre = Nombre.IndexOf(' ');
-                int InicioNombre = Nombre.IndexOf(Nombre[0]);
-
-                if (!EsInicialMayusucla)
-                {
-                    Console.WriteLine("El nombre debe estar capitalizado");
-                }
-                else
-                {
-                    if (FinNombre == -1)
-                        Console.WriteLine("El nombre debe contener un espacio al final");
-                    else
-                        NombreInicial = Nombre.Substring(InicioNombre, FinNombre);
-                }
-            }
-
-            return NombreInicial;
-        }
+        #endregion
     }
 }
