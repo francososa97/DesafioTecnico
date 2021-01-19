@@ -63,7 +63,6 @@ namespace DesafioTecnico
 
         public static void ObtenerValidacionNombre()
         {
-
             Console.WriteLine("\nSeleccione el nombre a validar: ");
             string NomnreSeleccionado = Console.ReadLine();
             bool NombreValido = NomnreSeleccionado.ValidarNombre();

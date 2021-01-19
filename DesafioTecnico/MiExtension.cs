@@ -132,11 +132,11 @@ namespace MetodosDeExtension
                 int InicioNombre = NombreValidar.NombreSimple.IndexOf(NombreValidar.NombreSimple[0]);
 
                 if (!EsInicialMayusucla)
-                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El nombre debe estar capitalizado");
+                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Nombre_Capitalizado");
                 else
                 {
                     if (FinNombre == -1)
-                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El nombre debe contener un espacio al final");
+                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Nombre_Sin_Espacio");
                     else
                         NombrePalabra = NombreValidar.NombreSimple.Substring(InicioNombre, FinNombre);
                 }
@@ -163,19 +163,19 @@ namespace MetodosDeExtension
                         int IndiceFinSegundoNombre = NombreValidar.NombreSimple.IndexOf(CaraterSegundoNombre);
                         string SegundoNombre = NombreValidar.NombreSimple.Substring(InicioSegundoNombre, IndiceFinSegundoNombre);
                         if (SegundoNombre.Length > 1)
-                            NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El segundo nombre tiene que ser inicial y terminar en punto");
+                            NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Segundo_Nombre_Palabra");
                     }
                     if (CantidadPuntos > 2)
-                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Solo puede haber de 2 a 3 terminos");
+                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Termino_Mayor");
 
                     if (ErrrorEnPuntos)
-                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Luego de Las iniciales tiene que ir un punto");
+                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Inicial_Sin_Punto");
 
                     if (NombreValidar.CantidadMayusculas != CantidadPalabras)
-                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Todo nombre debe contener Mayuscula");
+                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Nombre_Minuscula");
                 }
                 else
-                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "No se encontro el caracter =>. , luego de una inicial se debe incluir un punto");
+                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Sin_caracter");
 
 
                 if(!NombreInicialPalabra)
@@ -194,18 +194,18 @@ namespace MetodosDeExtension
                                 char ApellidoInicio = NombreCompleto[IndiceSiguienteMayuscula];
 
                                 if (IndiceSiguienteMayuscula == -1)
-                                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El apellido tiene que ser capitalizado");
+                                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Nombre_vacio");
 
                                 if (Char.IsLower(ApellidoInicio))
-                                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Todos los nombres tienen que ser iniciales y el apellido como palabra");
+                                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Iniciales_No_Capitalizadas");
 
                                 if (!char.IsUpper(NombreCompleto[i - 1]))
-                                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Todas Las iniciales de los nombres tienen que ser capitalizadas");
+                                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Iniciales_No_Capitalizadas");
 
                                 NombreValidar.Iniciales.Add(NombreCompleto[i - 1]);
                             }
                             else
-                                NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El nombre tiene que ser una inicial y no un nombre");
+                                NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Nombre_Inicial_Nombre");
                         }
                         i++;
                     }
@@ -218,10 +218,10 @@ namespace MetodosDeExtension
                 NombreValidar.CantidadIniciales = NombreValidar.Iniciales.Count();
 
                 if (NombreValidar.Apellido.Length == 1)
-                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El apellido debe ser una palabra no un caracter");
+                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Apellido_Caracter");
             }
             else
-                NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "La primer letra tiene que ser mayuscula");
+                NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Primer_Caracter_Min");
 
             NombreValidar.EsNombreValido = NombreValidar.CantidadErrores == 0 ? true : false;
 
@@ -236,9 +236,50 @@ namespace MetodosDeExtension
         /// <param name="CantidadErrores"></param>
         /// <param name="MensajeSaliente"></param>
         /// <returns></returns>
-        public static int AlertarError(int CantidadErrores, string MensajeSaliente)
+        public static int AlertarError(int CantidadErrores, string CodigoError)
         {
-            Console.WriteLine($" \nError: {MensajeSaliente}. \n");
+            switch(CodigoError)
+            {
+                case "Primer_Caracter_Min":
+                    Console.WriteLine($" \nError: La primer letra tiene que ser mayuscula. \n");
+                    break;
+                case "Apellido_Caracter":
+                    Console.WriteLine($" \nError: El apellido debe ser una palabra no un caracter. \n");
+                    break;
+                case "Nombre_Inicial_Nombre":
+                    Console.WriteLine($" \nError: El nombre tiene que ser una inicial y no un nombre. \n");
+                    break;
+                case "Iniciales_No_Capitalizadas":
+                    Console.WriteLine($" \nError: Todas Las iniciales de los nombres tienen que ser capitalizadas. \n");
+                    break;
+                case "Apellido_No_Capitalizado":
+                    Console.WriteLine($" \nError: El apellido tiene que ser capitalizado. \n");
+                    break;
+                case "Nombre_vacio":
+                    Console.WriteLine($" \nError: El nombre inicial esta vacio. \n");
+                    break;
+                case "Nombre_apitalizado":
+                    Console.WriteLine($" \nError: El nombre debe estar capitalizado. \n");
+                    break;
+                case "Nombre_Sin_Espacio":
+                    Console.WriteLine($" \nError: El nombre debe contener un espacio al final \n");
+                    break;
+                case "Segundo_Nombre_Palabra":
+                    Console.WriteLine($" \nError: El segundo nombre tiene que ser inicial y terminar en punto. \n");
+                    break;
+                case "Termino_Mayor":
+                    Console.WriteLine($" \nError: Solo puede haber de 2 a 3 terminos. \n");
+                    break;
+                case "Inicial_Sin_Punto":
+                    Console.WriteLine($" \nError: Luego de Las iniciales tiene que ir un punto. \n");
+                    break;
+                case "Nombre_Minuscula":
+                    Console.WriteLine($" \nError: Todo nombre debe contener Mayuscula. \n");
+                    break;
+                case "Sin_caracter":
+                    Console.WriteLine($" \nError: No se encontro el caracter =>. , luego de una inicial se debe incluir un punto. \n");
+                    break;
+            }
             return CantidadErrores = CantidadErrores + 1;
         }
 
