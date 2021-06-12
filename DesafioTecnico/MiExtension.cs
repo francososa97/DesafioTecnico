@@ -101,134 +101,6 @@ namespace MetodosDeExtension
             }
 
         }
-        #endregion
-
-        #region Segunda Parte
-        /// <summary>
-        /// Metodo de Extension que se utiliza para consultar si un nombre es valido o no.
-        /// </summary>
-        /// <param name="NombreCompleto"></param>
-        /// <returns></returns>
-        public static bool ValidarNombre(this string NombreCompleto)
-        {
-            NombreUsuario NombreValidar = new NombreUsuario()
-            {
-                Iniciales = new List<char>(),
-                CantidadMayusculas = NombreCompleto.Count(c => char.IsUpper(c)),
-                CantidadDeEspacios = NombreCompleto.Count(Char.IsWhiteSpace)
-            };
-            NombreCompleto = NombreCompleto.Trim();
-            char ValorApellido = NombreCompleto.Where(c => char.IsUpper(c)).Last();
-            int InicioApellido = NombreCompleto.IndexOf(ValorApellido);
-            NombreValidar.Apellido = NombreCompleto.Substring(InicioApellido);
-            NombreValidar.NombreSimple = NombreCompleto.Substring(0, InicioApellido);
-            string NombrePalabra = "";
-            if (NombreValidar.NombreSimple.Length <= 1)
-                NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "El nombre inicial esta vacio");
-            else
-            {
-                bool EsInicialMayusucla = char.IsUpper(NombreValidar.NombreSimple.First());
-                int FinNombre = NombreValidar.NombreSimple.IndexOf(' ');
-                int InicioNombre = NombreValidar.NombreSimple.IndexOf(NombreValidar.NombreSimple[0]);
-
-                if (!EsInicialMayusucla)
-                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Nombre_Capitalizado");
-                else
-                {
-                    if (FinNombre == -1)
-                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Nombre_Sin_Espacio");
-                    else
-                        NombrePalabra = NombreValidar.NombreSimple.Substring(InicioNombre, FinNombre);
-                }
-            }
-            bool NombreInicialPalabra = NombrePalabra.Length > 1 ? true : false;
-
-            if (char.IsUpper(NombreCompleto[0]))
-            {
-                int i = 0;
-                char CaracterSolicitado = '.';
-                int IndiceCaracter = NombreCompleto.IndexOf(CaracterSolicitado);
-                if(IndiceCaracter != -1)
-                {
-                    int CantidadPuntos = NombreCompleto.Count(c => c == NombreCompleto[IndiceCaracter]);
-                    int CantidadPalabras = NombreValidar.CantidadDeEspacios + 1;
-                    bool ErrrorEnPuntos = CantidadPuntos == CantidadPalabras - 1 || NombreInicialPalabra ? false : true;
-
-                    if (CantidadPalabras >2)
-                    {
-
-                        char CaraterSegundoNombre = NombreValidar.NombreSimple.Where(c => char.IsUpper(c)).Last();
-                        int InicioSegundoNombre = NombreValidar.NombreSimple.IndexOf(CaraterSegundoNombre);
-                        char FinSegundoNombre = NombreValidar.NombreSimple.Where(c => c == ' ').Last();
-                        int IndiceFinSegundoNombre = NombreValidar.NombreSimple.IndexOf(CaraterSegundoNombre);
-                        string SegundoNombre = NombreValidar.NombreSimple.Substring(InicioSegundoNombre, IndiceFinSegundoNombre);
-                        if (SegundoNombre.Length > 1)
-                            NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Segundo_Nombre_Palabra");
-                    }
-                    if (CantidadPuntos > 2)
-                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Termino_Mayor");
-
-                    if (ErrrorEnPuntos)
-                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Inicial_Sin_Punto");
-
-                    if (NombreValidar.CantidadMayusculas != CantidadPalabras)
-                        NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Nombre_Minuscula");
-                }
-                else
-                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Sin_caracter");
-
-
-                if(!NombreInicialPalabra)
-                {
-                    foreach (var Caracter in NombreCompleto)
-                    {
-                        if (CaracterSolicitado == Caracter)
-                        {
-                            int IndiceNombre = NombreCompleto.IndexOf(NombreCompleto[i]);
-                            var InicialNombre = NombreCompleto.Substring(0, IndiceNombre);
-                            bool NombreInicial = InicialNombre.Length == 1 ? true : false;
-                            if (NombreInicial)
-                            {
-                                string RestoNombre = NombreCompleto.Substring(IndiceNombre);
-                                int IndiceSiguienteMayuscula = NombreCompleto.IndexOf(RestoNombre.Where(c => char.IsUpper(c)).First());
-                                char ApellidoInicio = NombreCompleto[IndiceSiguienteMayuscula];
-
-                                if (IndiceSiguienteMayuscula == -1)
-                                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Nombre_vacio");
-
-                                if (Char.IsLower(ApellidoInicio))
-                                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Iniciales_No_Capitalizadas");
-
-                                if (!char.IsUpper(NombreCompleto[i - 1]))
-                                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Iniciales_No_Capitalizadas");
-
-                                NombreValidar.Iniciales.Add(NombreCompleto[i - 1]);
-                            }
-                            else
-                                NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Nombre_Inicial_Nombre");
-                        }
-                        i++;
-                    }
-                }
-                else
-                {
-                    NombreValidar.NombreSimple = NombrePalabra;
-                }
-               
-                NombreValidar.CantidadIniciales = NombreValidar.Iniciales.Count();
-
-                if (NombreValidar.Apellido.Length == 1)
-                    NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Apellido_Caracter");
-            }
-            else
-                NombreValidar.CantidadErrores = AlertarError(NombreValidar.CantidadErrores, "Primer_Caracter_Min");
-
-            NombreValidar.EsNombreValido = NombreValidar.CantidadErrores == 0 ? true : false;
-
-            if (NombreValidar.EsNombreValido)
-                MostarContenido(NombreValidar);
-            return NombreValidar.EsNombreValido;
-        }
 
         /// <summary>
         /// Metodo que se utiliza para loguear Errores por pantalla y aumentar la cantidad de errrores en el caso del metodo ValidarNombre.
@@ -236,9 +108,9 @@ namespace MetodosDeExtension
         /// <param name="CantidadErrores"></param>
         /// <param name="MensajeSaliente"></param>
         /// <returns></returns>
-        public static int AlertarError(int CantidadErrores, string CodigoError)
+        public static void AlertarError(int nombreUsuario, string CodigoError)
         {
-            switch(CodigoError)
+            switch (CodigoError)
             {
                 case "Primer_Caracter_Min":
                     Console.WriteLine($" \nError: La primer letra tiene que ser mayuscula. \n");
@@ -279,26 +151,209 @@ namespace MetodosDeExtension
                 case "Sin_caracter":
                     Console.WriteLine($" \nError: No se encontro el caracter =>. , luego de una inicial se debe incluir un punto. \n");
                     break;
+                default:
+                    Console.WriteLine(CodigoError);
+                    break;
             }
-            return CantidadErrores = CantidadErrores + 1;
+        }
+        #endregion
+
+        #region Segunda Parte
+        /// <summary>
+        /// Metodo de Extension que se utiliza para consultar si un nombre es valido o no.
+        /// </summary>
+        /// <param name="NombreCompleto"></param>
+        /// <returns></returns>
+        public static bool ValidarNombre(this string NombreCompleto)
+        {
+
+            var NombreValidar = BuildNombreUsuarioValidar(NombreCompleto);
+
+            var cantidadErrores= ContarErroresValidacion(NombreValidar);
+
+            NombreValidar.EsNombreValido = cantidadErrores == 0;
+            return NombreValidar.EsNombreValido;
+
+        }
+        public static NombreUsuario BuildNombreUsuarioValidar(string nombre)
+        {
+
+            char ValorApellido = nombre.Where(c => char.IsUpper(c)).Last();
+            int InicioApellido = nombre.IndexOf(ValorApellido);
+            int CantidadMayusculas = nombre.Count(c => char.IsUpper(c));
+            int CantidadDeEspacios = nombre.Count(Char.IsWhiteSpace);
+            string Apellido = nombre.Substring(InicioApellido);
+            string NombreSimple = nombre.Substring(0, InicioApellido);
+
+            NombreUsuario NombreValidar = new NombreUsuario(CantidadMayusculas, CantidadDeEspacios, Apellido, NombreSimple, nombre.Trim());
+
+            return NombreValidar;
+
         }
 
-        /// <summary>
-        /// Metodo que Muestra por consola toda la informacion que tiene el modelo NombreUsuario cargado en el metodo ValidarNombre.
-        /// </summary>
-        /// <param name="NombreAMostrar"></param>
-        public static void MostarContenido(NombreUsuario NombreAMostrar)
+        public static int ContarErroresValidacion(NombreUsuario nombre)
         {
-            foreach (var Inicial in NombreAMostrar.Iniciales)
+            bool TienenombreInicial= TieneNombrePrincipal(nombre);
+            char inicialNombre = nombre.NombreCompleto.FirstOrDefault();
+
+            if (char.IsUpper(inicialNombre))
             {
-                Console.WriteLine($"\n Inicial en el nombre del usuario {Inicial}");
+                VerificarCaracteresNombre(ref nombre, inicialNombre, TienenombreInicial);
+
+                if (!TienenombreInicial)
+                {
+                    int i = 0;
+                    foreach (var Caracter in nombre.NombreCompleto)
+                    {
+                        if (Caracter == '.')
+                        {
+                            int IndiceNombre = nombre.NombreCompleto.IndexOf(nombre.NombreCompleto[i]);
+                            var InicialNombre = nombre.NombreCompleto.Substring(0, IndiceNombre);
+                            bool NombreInicial = InicialNombre.Length == 1 ? true : false;
+                            if (NombreInicial)
+                            {
+                                string RestoNombre = nombre.NombreCompleto.Substring(IndiceNombre);
+                                int IndiceSiguienteMayuscula = nombre.NombreCompleto.IndexOf(RestoNombre.Where(c => char.IsUpper(c)).First());
+                                char ApellidoInicio = nombre.NombreCompleto[IndiceSiguienteMayuscula];
+
+                                if (IndiceSiguienteMayuscula == -1)
+                                    AlertarError(ref nombre, "Nombre_vacio");
+
+                                if (Char.IsLower(ApellidoInicio))
+                                    AlertarError(ref nombre, "Iniciales_No_Capitalizadas");
+
+                                if (!char.IsUpper(nombre.NombreCompleto[i - 1]))
+                                    AlertarError(ref nombre, "Iniciales_No_Capitalizadas");
+
+                                nombre.Iniciales.Add(nombre.NombreCompleto[i - 1]);
+                            }
+                            else
+                                AlertarError(ref nombre, "Nombre_Inicial_Nombre");
+                        }
+                        i++;
+                    }
+                }
+                if (nombre.Apellido.Length == 1)
+                    AlertarError(ref nombre, "Apellido_Caracter");
             }
-            Console.WriteLine($"\n Tiene una cantidad de {NombreAMostrar.CantidadIniciales} iniciales");
-            Console.WriteLine($"\n El nombre ingresado fue: {NombreAMostrar.NombreSimple}");
-            Console.WriteLine($"\n El apellido ingresado fue {NombreAMostrar.Apellido}");
-            Console.WriteLine($"\n El nombre ingresado tiene una cantidad de {NombreAMostrar.CantidadMayusculas} mayusculas");
-            Console.WriteLine($"\n El nombre ingresado tiene una cantidad de {NombreAMostrar.CantidadDeEspacios} espacios");
-            Console.WriteLine($"\n El nombre ingresado tiene una cantidad de {NombreAMostrar.CantidadErrores} errores");
+            else
+                AlertarError(ref nombre, "Primer_Caracter_Min");
+
+            return nombre.CantidadErrores;
+        }
+
+        public static bool TieneNombrePrincipal(NombreUsuario nombre)
+        {
+            string nombreSimple = "";
+            if (nombre.NombreSimple.Length <= 1)
+                AlertarError(ref nombre, "El nombre inicial esta vacio");
+            else
+            {
+                bool EsInicialMayusucla = char.IsUpper(nombre.NombreSimple.First());
+                int FinNombre = nombre.NombreSimple.IndexOf(' ');
+                int InicioNombre = nombre.NombreSimple.IndexOf(nombre.NombreSimple[0]);
+
+                if (!EsInicialMayusucla)
+                    AlertarError(ref nombre, "Nombre_Capitalizado");
+                else
+                {
+                    if (FinNombre == -1)
+                        AlertarError(ref nombre, "Nombre_Sin_Espacio");
+                    else
+                        nombreSimple = nombre.NombreSimple.Substring(InicioNombre, FinNombre);
+                }
+            }
+            return nombreSimple.Length > 0;
+        }
+
+
+        /// <summary>
+        /// Metodo que se utiliza para loguear Errores por pantalla y aumentar la cantidad de errrores en el caso del metodo ValidarNombre.
+        /// </summary>
+        /// <param name="nombreUsuario"></param>
+        /// <param name="CodigoError"></param>
+        /// <returns></returns>
+        public static void AlertarError(ref NombreUsuario nombreUsuario, string CodigoError)
+        {
+            switch (CodigoError)
+            {
+                case "Primer_Caracter_Min":
+                    Console.WriteLine($" \nError: La primer letra tiene que ser mayuscula. \n");
+                    break;
+                case "Apellido_Caracter":
+                    Console.WriteLine($" \nError: El apellido debe ser una palabra no un caracter. \n");
+                    break;
+                case "Nombre_Inicial_Nombre":
+                    Console.WriteLine($" \nError: El nombre tiene que ser una inicial y no un nombre. \n");
+                    break;
+                case "Iniciales_No_Capitalizadas":
+                    Console.WriteLine($" \nError: Todas Las iniciales de los nombres tienen que ser capitalizadas. \n");
+                    break;
+                case "Apellido_No_Capitalizado":
+                    Console.WriteLine($" \nError: El apellido tiene que ser capitalizado. \n");
+                    break;
+                case "Nombre_vacio":
+                    Console.WriteLine($" \nError: El nombre inicial esta vacio. \n");
+                    break;
+                case "Nombre_apitalizado":
+                    Console.WriteLine($" \nError: El nombre debe estar capitalizado. \n");
+                    break;
+                case "Nombre_Sin_Espacio":
+                    Console.WriteLine($" \nError: El nombre debe contener un espacio al final \n");
+                    break;
+                case "Segundo_Nombre_Palabra":
+                    Console.WriteLine($" \nError: El segundo nombre tiene que ser inicial y terminar en punto. \n");
+                    break;
+                case "Termino_Mayor":
+                    Console.WriteLine($" \nError: Solo puede haber de 2 a 3 terminos. \n");
+                    break;
+                case "Inicial_Sin_Punto":
+                    Console.WriteLine($" \nError: Luego de Las iniciales tiene que ir un punto. \n");
+                    break;
+                case "Nombre_Minuscula":
+                    Console.WriteLine($" \nError: Todo nombre debe contener Mayuscula. \n");
+                    break;
+                case "Sin_caracter":
+                    Console.WriteLine($" \nError: No se encontro el caracter =>. , luego de una inicial se debe incluir un punto. \n");
+                    break;
+                default:
+                    Console.WriteLine(CodigoError);
+                    break;
+            }
+            nombreUsuario.CantidadErrores++;
+        }
+
+        public static void VerificarCaracteresNombre(ref NombreUsuario nombre, char inicialNombre, bool TienenombreInicial)
+        {
+            char CaracterSolicitado = '.';
+            int IndiceCaracter = nombre.NombreCompleto.IndexOf(CaracterSolicitado);
+            if (IndiceCaracter != -1)
+            {
+                int CantidadPuntos = nombre.NombreCompleto.Count(c => c == CaracterSolicitado);
+                int CantidadPalabras = nombre.CantidadDeEspacios + 1;
+                bool ErrrorEnPuntos = CantidadPuntos == CantidadPalabras - 1 || TienenombreInicial ? false : true;
+
+                if (CantidadPalabras > 2)
+                {
+                    char CaraterSegundoNombre = nombre.NombreSimple.Where(c => char.IsUpper(c)).Last();
+                    int InicioSegundoNombre = nombre.NombreSimple.IndexOf(CaraterSegundoNombre);
+                    char FinSegundoNombre = nombre.NombreSimple.Where(c => c == ' ').Last();
+                    int IndiceFinSegundoNombre = nombre.NombreSimple.IndexOf(CaraterSegundoNombre);
+                    string SegundoNombre = nombre.NombreSimple.Substring(InicioSegundoNombre, IndiceFinSegundoNombre);
+                    if (SegundoNombre.Length > 1)
+                        AlertarError(ref nombre, "Segundo_Nombre_Palabra");
+                }
+                if (CantidadPuntos > 2)
+                    AlertarError(ref nombre, "Termino_Mayor");
+
+                if (ErrrorEnPuntos)
+                    AlertarError(ref nombre, "Inicial_Sin_Punto");
+
+                if (nombre.CantidadMayusculas != CantidadPalabras)
+                    AlertarError(ref nombre, "Nombre_Minuscula");
+            }
+            else
+                AlertarError(ref nombre, "Sin_caracter");
         }
 
         #endregion

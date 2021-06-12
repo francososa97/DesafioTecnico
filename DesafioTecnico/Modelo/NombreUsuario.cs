@@ -11,10 +11,6 @@ namespace DesafioTecnico.Modelo
         /// </summary>
         public List<char> Iniciales { get; set; }
         /// <summary>
-        /// Cantidad de iniciales total de la lista
-        /// </summary>
-        public int CantidadIniciales { get; set; }
-        /// <summary>
         /// String donde se almacena el nombre del usuario
         /// </summary>
         public string NombreSimple { get; set; }
@@ -38,5 +34,20 @@ namespace DesafioTecnico.Modelo
         /// Flag que devuelve nuestro metodo de extension para validar el nombre del usuario
         /// </summary>
         public bool EsNombreValido { get; set; }
+        /// <summary>
+        /// String que contiene el nombre completo trimeado para validar
+        /// </summary>
+        public string NombreCompleto { get; set; }
+
+        public NombreUsuario(int CantidadMayusculas,int CantidadDeEspacios, string Apellido, string NombreSimple, string NombreCompleto)
+        {
+            this.Iniciales = new List<char>();
+            this.CantidadMayusculas = CantidadMayusculas;
+            this.CantidadDeEspacios = CantidadDeEspacios;
+            this.Apellido = Apellido;
+            this.NombreSimple = NombreSimple;
+            this.NombreCompleto = NombreCompleto;
+        }
+
     }
 }
